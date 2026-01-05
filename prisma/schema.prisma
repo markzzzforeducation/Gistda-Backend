@@ -12,15 +12,81 @@ model User {
   name       String
   email      String   @unique
   password   String
+  role       String   @default("intern") // "admin", "intern", "external"
   provider   String   @default("local") // "local" or "google"
   googleId   String?  @unique
   avatar     String?  // Google profile picture URL
+  profile    Profile?
   ownedBoards Board[] @relation("BoardOwner")
   boards     Board[]  @relation("BoardMembers")
   assignedTasks Task[] @relation("TaskAssignees")
   notifications Notification[] @relation("UserNotifications")
+  submissions Submission[]
+  evaluations Evaluation[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Profile {
+  id           String  @id @default(cuid())
+  userId       String  @unique
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName    String?
+  lastName     String?
+  university   String?
+  faculty      String?
+  major        String?
+  studentId    String?
+  startDate    String?
+  endDate      String?
+  mobile       String?
+  advisorName  String?
+  advisorEmail String?
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  lessons     Lesson[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Lesson {
+  id        String  @id @default(cuid())
+  title     String
+  content   String
+  videoUrl  String?
+  courseId  String
+  course    Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Submission {
+  id          String   @id @default(cuid())
+  title       String
+  abstract    String
+  studentName String
+  studentId   String
+  student     User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  imageUrl    String
+  status      String   @default("pending") // "pending", "published", "rejected"
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Evaluation {
+  id              String   @id @default(cuid())
+  internId        String
+  intern          User     @relation(fields: [internId], references: [id], onDelete: Cascade)
+  mentorId        String
+  mentorName      String
+  punctuality     Int
+  qualityOfWork   Int
+  teamwork        Int
+  problemSolving  Int
+  comment         String
+  createdAt       DateTime @default(now())
 }
 
 model Board {

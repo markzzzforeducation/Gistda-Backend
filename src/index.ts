@@ -5,6 +5,10 @@ import { json } from 'express';
 import { router as authRouter } from './routes/auth';
 import { router as boardsRouter } from './routes/boards';
 import { router as notificationsRouter } from './routes/notifications';
+import { router as usersRouter } from './routes/users';
+import { router as coursesRouter } from './routes/courses';
+import { router as submissionsRouter } from './routes/submissions';
+import { router as evaluationsRouter } from './routes/evaluations';
 
 const app = express();
 
@@ -30,6 +34,10 @@ app.get('/health', (_req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/boards', boardsRouter);
 app.use('/api/notifications', notificationsRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/courses', coursesRouter);
+app.use('/api/submissions', submissionsRouter);
+app.use('/api/evaluations', evaluationsRouter);
 
 const PORT = Number(process.env.PORT || 5174);
 app.listen(PORT, () => {
