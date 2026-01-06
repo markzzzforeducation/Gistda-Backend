@@ -111,7 +111,51 @@ async function main() {
         },
     });
 
-    console.log('Created courses:', { course1, course2 });
+    const course3 = await prisma.course.upsert({
+        where: { id: 'c3' },
+        update: {},
+        create: {
+            id: 'c3',
+            title: 'THEOS-2: การพัฒนาดาวเทียมดวงเล็กและระบบภาคพื้นดิน',
+            description: 'หลักสูตรการพัฒนาดาวเทียมเล็กและระบบภาคพื้นดินสำหรับการทบทวนบทเรียนของเจ้าหน้าที่ Theos-2/GISTDA',
+            lessons: {
+                create: [
+                    {
+                        id: 'l4',
+                        title: 'VDO 1-1-23: Introduction and General Project Management',
+                        content: 'บทนำและการจัดการโครงการทั่วไป - เรียนรู้เกี่ยวกับพื้นฐานของการจัดการโครงการและวงจรชีวิตของโครงการ',
+                        videoUrl: 'https://www.youtube.com/embed/KspE1OiCduA',
+                    },
+                    {
+                        id: 'l5',
+                        title: 'VDO 2-2-23: Spacecraft Systems Engineering',
+                        content: 'วิศวกรรมระบบยานอวกาศ - ศึกษาหลักการและกระบวนการออกแบบระบบยานอวกาศ',
+                        videoUrl: 'https://www.youtube.com/embed/VitMejketVs',
+                    },
+                    {
+                        id: 'l6',
+                        title: 'VDO 3-3-23: Satellite Design and Development',
+                        content: 'การออกแบบและพัฒนาดาวเทียม - เจาะลึกกระบวนการออกแบบและพัฒนาดาวเทียมขนาดเล็ก',
+                        videoUrl: 'https://www.youtube.com/embed/M7TJ6pcfsoI',
+                    },
+                    {
+                        id: 'l7',
+                        title: 'VDO Advance 23: Ground System Infrastructure',
+                        content: 'โครงสร้างพื้นฐานระบบภาคพื้นดิน - ศึกษาระบบควบคุมและรับส่งข้อมูลกับดาวเทียม',
+                        videoUrl: 'https://www.youtube.com/embed/SEMovRH5hA4',
+                    },
+                    {
+                        id: 'l8',
+                        title: 'VDO Baisc: Fundamentals of Satellite Technology',
+                        content: 'พื้นฐานเทคโนโลยีดาวเทียม - ความรู้พื้นฐานที่จำเป็นสำหรับการทำงานกับเทคโนโลยีดาวเทียม',
+                        videoUrl: 'https://www.youtube.com/embed/KB-w27uMM34',
+                    },
+                ],
+            },
+        },
+    });
+
+    console.log('Created courses:', { course1, course2, course3 });
 
     // Create submissions
     const submission1 = await prisma.submission.upsert({
