@@ -54,12 +54,14 @@ model Course {
 }
 
 model Lesson {
-  id        String  @id @default(cuid())
-  title     String
-  content   String
-  videoUrl  String?
-  courseId  String
-  course    Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  id         String  @id @default(cuid())
+  title      String
+  content    String
+  videoUrl   String?
+  instructor String?
+  duration   String?
+  courseId   String
+  course     Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model Submission {

@@ -10,6 +10,8 @@ const lessonSchema = z.object({
     title: z.string(),
     content: z.string(),
     videoUrl: z.string().optional(),
+    instructor: z.string().optional(),
+    duration: z.string().optional(),
 });
 
 const createCourseSchema = z.object({
@@ -73,6 +75,8 @@ router.post('/', requireAuth, async (req, res) => {
                             title: lesson.title,
                             content: lesson.content,
                             videoUrl: lesson.videoUrl || '',
+                            instructor: lesson.instructor,
+                            duration: lesson.duration,
                         })),
                     }
                     : undefined,
@@ -123,6 +127,8 @@ router.put('/:id', requireAuth, async (req, res) => {
                             title: lesson.title,
                             content: lesson.content,
                             videoUrl: lesson.videoUrl || '',
+                            instructor: lesson.instructor,
+                            duration: lesson.duration,
                         })),
                     }
                     : undefined,
@@ -142,12 +148,50 @@ router.put('/:id', requireAuth, async (req, res) => {
 // Delete course
 router.delete('/:id', requireAuth, async (req, res) => {
     try {
-        await prisma.course.delete({
+        console.log('Attempting to delete course:', req.params.id);
+        const result = await prisma.course.delete({
             where: { id: req.params.id },
         });
+        console.log('Course deleted successfully:', result);
         res.json({ success: true });
     } catch (error) {
         console.error('Delete course error:', error);
-        res.status(500).json({ error: 'Failed to delete course' });
+        res.status(500).json({ error: 'Failed to delete course', details: error instanceof Error ? error.message : 'Unknown error' });
+    }
+});
+
+// Update lesson
+router.put('/:courseId/lessons/:lessonId', requireAuth, async (req, res) => {
+    try {
+        const { title, content, videoUrl, instructor, duration } = req.body;
+
+        const lesson = await prisma.lesson.update({
+            where: { id: req.params.lessonId },
+            data: {
+                title,
+                content,
+                videoUrl: videoUrl || '',
+                instructor,
+                duration,
+            },
+        });
+
+        res.json(lesson);
+    } catch (error) {
+        console.error('Update lesson error:', error);
+        res.status(500).json({ error: 'Failed to update lesson' });
+    }
+});
+
+// Delete lesson
+router.delete('/:courseId/lessons/:lessonId', requireAuth, async (req, res) => {
+    try {
+        await prisma.lesson.delete({
+            where: { id: req.params.lessonId },
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Delete lesson error:', error);
+        res.status(500).json({ error: 'Failed to delete lesson' });
     }
 });
