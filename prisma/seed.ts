@@ -148,7 +148,7 @@ async function main() {
                         id: 'l7',
                         title: 'Introduction to Thermal and Radiation',
                         content: 'การจัดการความร้อนและการป้องกันรังสี - เรียนรู้เกี่ยวกับระบบควบคุมอุณหภูมิและการป้องกันรังสีในอวกาศ',
-                        videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                        videoUrl: 'https://www.youtube-nocookie.com/embed/KspE1OiCduA?rel=0&controls=1&disablekb=0&enablejsapi=1&modestbranding=1',
                         instructor: 'มาสเตอร์อธิคม ศิรฉันทรัตน์',
                         duration: '1:00:14 hrs',
                     },
