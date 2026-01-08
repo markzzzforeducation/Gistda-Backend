@@ -195,3 +195,83 @@ router.delete('/:courseId/lessons/:lessonId', requireAuth, async (req, res) => {
         res.status(500).json({ error: 'Failed to delete lesson' });
     }
 });
+
+// Get lesson progress for a course
+router.get('/:courseId/progress', requireAuth, async (req, res) => {
+    try {
+        const userId = (req as any).userId;
+        const course = await prisma.course.findUnique({
+            where: { id: req.params.courseId },
+            include: { lessons: true },
+        });
+
+        if (!course) {
+            return res.status(404).json({ error: 'Course not found' });
+        }
+
+        const lessonIds = course.lessons.map(l => l.id);
+        const progress = await prisma.lessonProgress.findMany({
+            where: {
+                userId,
+                lessonId: { in: lessonIds },
+            },
+        });
+
+        res.json(progress);
+    } catch (error) {
+        console.error('Get progress error:', error);
+        res.status(500).json({ error: 'Failed to fetch progress' });
+    }
+});
+
+// Mark lesson as complete
+router.post('/:courseId/lessons/:lessonId/complete', requireAuth, async (req, res) => {
+    try {
+        const userId = (req as any).userId;
+        const { lessonId } = req.params;
+
+        const progress = await prisma.lessonProgress.upsert({
+            where: {
+                userId_lessonId: {
+                    userId,
+                    lessonId,
+                },
+            },
+            update: {
+                completed: true,
+            },
+            create: {
+                userId,
+                lessonId,
+                completed: true,
+            },
+        });
+
+        res.json(progress);
+    } catch (error) {
+        console.error('Mark complete error:', error);
+        res.status(500).json({ error: 'Failed to mark lesson as complete' });
+    }
+});
+
+// Unmark lesson as complete
+router.delete('/:courseId/lessons/:lessonId/complete', requireAuth, async (req, res) => {
+    try {
+        const userId = (req as any).userId;
+        const { lessonId } = req.params;
+
+        await prisma.lessonProgress.delete({
+            where: {
+                userId_lessonId: {
+                    userId,
+                    lessonId,
+                },
+            },
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Unmark complete error:', error);
+        res.status(500).json({ error: 'Failed to unmark lesson' });
+    }
+});
