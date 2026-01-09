@@ -10,6 +10,7 @@ const lessonSchema = z.object({
     title: z.string(),
     content: z.string(),
     videoUrl: z.string().optional(),
+    pdfUrl: z.string().optional(),
     instructor: z.string().optional(),
     duration: z.string().optional(),
 });
@@ -75,6 +76,7 @@ router.post('/', requireAuth, async (req, res) => {
                             title: lesson.title,
                             content: lesson.content,
                             videoUrl: lesson.videoUrl || '',
+                            pdfUrl: lesson.pdfUrl || '',
                             instructor: lesson.instructor,
                             duration: lesson.duration,
                         })),
@@ -127,6 +129,7 @@ router.put('/:id', requireAuth, async (req, res) => {
                             title: lesson.title,
                             content: lesson.content,
                             videoUrl: lesson.videoUrl || '',
+                            pdfUrl: lesson.pdfUrl || '',
                             instructor: lesson.instructor,
                             duration: lesson.duration,
                         })),
@@ -163,7 +166,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
 // Update lesson
 router.put('/:courseId/lessons/:lessonId', requireAuth, async (req, res) => {
     try {
-        const { title, content, videoUrl, instructor, duration } = req.body;
+        const { title, content, videoUrl, pdfUrl, instructor, duration } = req.body;
 
         const lesson = await prisma.lesson.update({
             where: { id: req.params.lessonId },
@@ -171,6 +174,7 @@ router.put('/:courseId/lessons/:lessonId', requireAuth, async (req, res) => {
                 title,
                 content,
                 videoUrl: videoUrl || '',
+                pdfUrl: pdfUrl || '',
                 instructor,
                 duration,
             },

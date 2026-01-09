@@ -59,6 +59,7 @@ model Lesson {
   title      String
   content    String
   videoUrl   String?
+  pdfUrl     String?
   instructor String?
   duration   String?
   courseId   String
